@@ -2,6 +2,7 @@ from discord_components import *
 import discord
 from datetime import datetime,timezone,timedelta
 import os
+import json
 import threading
 from flask import Flask, request
 from flask import render_template
@@ -10,8 +11,14 @@ from flask import render_template
 #設定#
 #####
 
-bot = ComponentsBot(command_prefix="1",help_command=None)
-ULR = "http://hbot.fun/"
+with open('Setting.json',mode='r',encoding='utf8') as jfile:
+    jdata = json.load(jfile)
+Prefix = jdata["Prefix"]
+Token = jdata["Token"]
+
+bot = commands.Bot(commands.when_mentioned_or(Prefix), intents=discord.Intents.all(), help_command=None)
+
+ULR = "http://backupmode.xyz/" #!! 請自行設定
 #線上看網址
 
 
@@ -35,7 +42,7 @@ t.start()
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}!")
+    print(f"機器人 {bot.user} 已上線!")
 
 
 @bot.command()
@@ -93,4 +100,4 @@ async def on_message(message):
     else:
       await message.channel.send("你沒有權限欸,要不要在你自己的伺服器試試看")
 
-bot.run("TOKEN在這")
+bot.run(Token)
